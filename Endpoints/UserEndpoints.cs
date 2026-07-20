@@ -22,5 +22,18 @@ public static class UserEndpoints
 
             return TypedResults.Ok("Signed in Successfully!");
         });  
+
+        app.MapPost("api/users/register", async Task<Results<BadRequest<string>, Created<string>>>  
+            (IUserService userService, RegisterUserDto registerUserDto) =>
+        {
+            var serviceResult = await userService.RegisterUserAsync(registerUserDto);
+            
+            if(serviceResult.isFailure)
+            {
+                return TypedResults.BadRequest(serviceResult.ErrorMessage);
+            }
+
+            return TypedResults.Created("/api/users/login", "Registered Successfully!");
+        });  
     } 
 }
