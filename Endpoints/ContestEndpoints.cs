@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Identity.Client;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Services;
 
