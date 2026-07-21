@@ -29,14 +29,21 @@ public class ContestService : IContestService
                 .ToListAsync();
     }
 
-    // public Task<ICollection<ShowContestDto>> ShowContest(int contestId)
-    // {
-    //     var a7a = _context.Contests
-    //                       .AsNoTracking()
-    //                       .Where(contest => contest.ContestId == contestId)
-    //                       .Select(contestDto => new ContestDetailsDto
-    //                       {
-                              
-    //                       });
-    // }
+    public async Task<ContestDetailsDto?> ShowContest(int contestId)
+    {
+            return await _context.Contests
+                        .AsNoTracking()
+                        .Where(contest => contest.ContestId == contestId)
+                        .Select(contest => new ContestDetailsDto
+                        {
+                            ContestName = contest.ContestName,
+                            ContestLevel = contest.ContestLevel,
+                            Problems = contest.Problems.Select(problem => new ProblemSummaryDto
+                            {
+                                ProblemName = problem.ProblemName,
+                                ProblemLevel = problem.ProblemLevel
+                            }).ToList()
+                        })
+                        .FirstOrDefaultAsync();
+    }
 }

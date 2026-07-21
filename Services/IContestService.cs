@@ -6,6 +6,6 @@ public interface IContestService
 {
     // Get All The Available Contests
     public Task<ICollection<ShowContestDto>> ShowAllContests();
-    public Task<ICollection<ShowContestDto>> ShowContest(int contestId);
+    public Task<ContestDetailsDto?> ShowContest(int contestId);
     
 }
