@@ -13,7 +13,5 @@ public class User
     public bool IsAdmin { get; set; }
 
     // Navigation Properties
-    public ICollection<Submission> Submissions { get; set; } = new List<Submission>();
-    
-    public ICollection<Problem>? RecentProblemsSolved { get; set; }
+    public ICollection<Submission> Submissions { get; set; } = new List<Submission>();   
 }

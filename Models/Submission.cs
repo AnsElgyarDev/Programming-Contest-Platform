@@ -5,8 +5,7 @@ public class Submission
     public int SubmissionId { get; set; }
     public string SubmissionCode { get; set; } = string.Empty;
     public DateTime SubmissionTime { get; set; }
-    public bool SubmissionState { get; set; }
-
+    public string SubmissionState { get; set; } = string.Empty;
     public int UserId { get; set; }
     public User User { get; set; } = null!;
 
