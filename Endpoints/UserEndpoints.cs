@@ -8,7 +8,7 @@ namespace Programming_Contest_Platform.Endpoints;
 public static class UserEndpoints
 {
     public static async Task UseUserEndpoints(this WebApplication app)
-    {
+    {   
         // Post endpoints
         app.MapPost("api/users/signin", async Task<Results<BadRequest<string>, Ok<string>>>  
                   (IUserService userService,  SignInUserDto signInUserDto) =>

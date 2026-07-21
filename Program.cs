@@ -20,4 +20,5 @@ if (app.Environment.IsDevelopment())
 
 
 await app.UseUserEndpoints();
+await app.UseContestEndpoints();
 app.Run();
