@@ -21,8 +21,17 @@ public static class ContestEndpoints
             return TypedResults.Ok(contests);
         });
 
-        app.MapGet("api/contests/{id:int}", async (int contestId) =>
+        app.MapGet("api/contests/{contestId:int}", async Task<Results<NotFound<string>, Ok<ContestDetailsDto>>>
+                  (IContestService contestService, int contestId) =>
         {
+            var contest = await contestService.ShowContest(contestId);
+            
+            if(contest is null)
+            {
+                return TypedResults.NotFound("Contest Not Found");
+            }
+
+            return TypedResults.Ok(contest);
         });
     }
 
