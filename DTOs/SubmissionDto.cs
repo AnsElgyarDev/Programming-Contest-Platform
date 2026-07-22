@@ -10,3 +10,10 @@ public class SubmissionSummaryDto
     public string ProblemStatus { get; set; } = string.Empty;
     public DateTime SubmittedAt { get; set; }
 }
+
+public class ProblemSubmissionsDto
+{
+    public string userName { get; set; } = string.Empty;
+    public DateTime SubmittedAt { get; set; }
+    public string SubmissionStatus { get; set; } = string.Empty;
+}
