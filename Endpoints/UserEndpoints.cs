@@ -34,6 +34,8 @@ public static class UserEndpoints
             }
 
             return TypedResults.Created("/api/users/login", "Registered Successfully!");
-        });  
+        });
+
+        app.MapGet("/", () => Results.Redirect("/scalar/v1"));
     } 
 }

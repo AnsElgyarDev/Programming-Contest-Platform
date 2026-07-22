@@ -15,7 +15,7 @@ public class UserService : IUserService
     }
     public async Task<ServiceResult> RegisterUserAsync(RegisterUserDto registerUserDto)
     {
-        if(await _context!.Users.AnyAsync(email => email.UserEmail == registerUserDto.UserEmail))
+        if(await _context!.Users.AnyAsync(email => email.Email == registerUserDto.UserEmail))
         {
             return ServiceResult.Failure("There is already User with This Email");
         }
@@ -24,8 +24,8 @@ public class UserService : IUserService
         var user = new User
         {
             UserName = registerUserDto.UserName,  
-            UserEmail = registerUserDto.UserEmail,  
-            UserPassword = hashedPassword
+            Email = registerUserDto.UserEmail,  
+            PasswordHash = hashedPassword
         };
 
         await _context.Users.AddAsync(user);
@@ -36,14 +36,14 @@ public class UserService : IUserService
 
     public async Task<ServiceResult> SignInUserAsync(SignInUserDto signInDto)
     {
-        var user = await _context!.Users.FirstOrDefaultAsync(u => u.UserEmail == signInDto.UserEmail);
+        var user = await _context!.Users.FirstOrDefaultAsync(u => u.Email == signInDto.UserEmail);
         
         if(user is null)
         {
             return ServiceResult.Failure("There is Something Wrong in Email or Password");
         }
 
-        var verifiyPassword =  PasswordHasher.VerifyPassword(signInDto.UserPassword, user.UserPassword);
+        var verifiyPassword =  PasswordHasher.VerifyPassword(signInDto.UserPassword, user.PasswordHash = null!);
 
         if(!verifiyPassword)
         {

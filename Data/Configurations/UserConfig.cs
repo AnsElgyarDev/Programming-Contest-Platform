@@ -10,16 +10,16 @@ public class UserConfig : IEntityTypeConfiguration<User>
     {
         builder.ToTable("Users");
 
-        builder.HasKey(user => user.UserId);
+        builder.HasKey(user => user.Id);
 
-        builder.Property(user => user.UserEmail)
+        builder.Property(user => user.Email)
                .HasMaxLength(150)
                .IsRequired();
        
-       builder.HasIndex(user => user.UserEmail)
+       builder.HasIndex(user => user.Email)
               .IsUnique();
 
-        builder.Property(user => user.UserPassword)
+        builder.Property(user => user.PasswordHash)
                .HasMaxLength(256)
                .IsRequired();
 
