@@ -7,7 +7,7 @@ namespace Programming_Contest_Platform.Entity;
 
 public class User: IdentityUser<int>
 {
-public string FullName { get; set; } = string.Empty;
+public string? FullName { get; set; } = string.Empty;
     public string? Country { get; set; }              
     public string? Organization { get; set; }            
     public string? ProfilePictureUrl { get; set; }         

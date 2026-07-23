@@ -19,7 +19,7 @@ public class UserService : IUserService
     }
     public async Task<ServiceResult<string>> RegisterUserAsync(RegisterUserDto registerUserDto)
     {
-        var existingEmail = _userManager!.FindByEmailAsync(registerUserDto.UserEmail);
+        var existingEmail = await _userManager!.FindByEmailAsync(registerUserDto.UserEmail);
         
         if(existingEmail is not null)
         {
