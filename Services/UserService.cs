@@ -1,3 +1,5 @@
+using System.Reflection.Metadata.Ecma335;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.DTO;
@@ -8,48 +10,60 @@ namespace Programming_Contest_Platform.Services;
 
 public class UserService : IUserService
 {
-    private readonly AppDbContext? _context;
-    public UserService(AppDbContext? context)
+    private readonly UserManager<User>? _userManager;
+    private readonly IJwtTokenGenerator _jwtTokenGenerator;
+    public UserService(UserManager<User>? userManager, IJwtTokenGenerator jwtTokenGenerator)
     {
-        this._context = context;
+        this._userManager = userManager;
+        this._jwtTokenGenerator = jwtTokenGenerator;
     }
-    public async Task<ServiceResult> RegisterUserAsync(RegisterUserDto registerUserDto)
+    public async Task<ServiceResult<string>> RegisterUserAsync(RegisterUserDto registerUserDto)
     {
-        if(await _context!.Users.AnyAsync(email => email.Email == registerUserDto.UserEmail))
-        {
-            return ServiceResult.Failure("There is already User with This Email");
-        }
-        var hashedPassword = PasswordHasher.HashPassword(registerUserDto.UserPassword);
+        var existingEmail = _userManager!.FindByEmailAsync(registerUserDto.UserEmail);
         
+        if(existingEmail is not null)
+        {
+            return ServiceResult<string>.Failure("There is already a user with this email.");
+        }
+
         var user = new User
         {
-            UserName = registerUserDto.UserName,  
-            Email = registerUserDto.UserEmail,  
-            PasswordHash = hashedPassword
+            UserName = registerUserDto.UserName,
+            Email = registerUserDto.UserEmail,
         };
 
-        await _context.Users.AddAsync(user);
-        await _context.SaveChangesAsync();
+        var result = await _userManager.CreateAsync(user, registerUserDto.UserPassword);
 
-        return ServiceResult.Success();
+        if (!result.Succeeded)
+        {
+            var errorMessage = result.Errors.FirstOrDefault()?.Description ?? "Registration failed.";
+            return ServiceResult<string>.Failure(errorMessage);
+        }
+
+        var token = _jwtTokenGenerator.GenerateToken(user);
+
+        return ServiceResult<string>.Success(token);
     }
 
-    public async Task<ServiceResult> SignInUserAsync(SignInUserDto signInDto)
+    public async Task<ServiceResult<string>> SignInUserAsync(SignInUserDto signInDto)
     {
-        var user = await _context!.Users.FirstOrDefaultAsync(u => u.Email == signInDto.UserEmail);
+        var user = await _userManager!.FindByEmailAsync(signInDto.UserEmail);        
         
         if(user is null)
         {
-            return ServiceResult.Failure("There is Something Wrong in Email or Password");
+            return ServiceResult<string>.Failure("There is Something Wrong in Email or Password");
         }
 
-        var verifiyPassword =  PasswordHasher.VerifyPassword(signInDto.UserPassword, user.PasswordHash = null!);
-
-        if(!verifiyPassword)
+        var isPasswordValid = await _userManager.CheckPasswordAsync(user, signInDto.UserPassword);
+        
+        if(!isPasswordValid)
         {
-            return ServiceResult.Failure("Password is Wrong!");   
+            return ServiceResult<String>.Failure("Invalid Email or Password!");   
         }
 
-        return ServiceResult.Success();
+        var token = _jwtTokenGenerator.GenerateToken(user);
+
+        return ServiceResult<string>.Success(token);
+
     }
 }

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.Identity.Client;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Services;
 
@@ -8,34 +7,36 @@ namespace Programming_Contest_Platform.Endpoints;
 public static class UserEndpoints
 {
     public static async Task UseUserEndpoints(this WebApplication app)
-    {   
+    {
+        var group = app.MapGroup("api/users").WithTags("Users Authentication");
+
         // Post endpoints
-        app.MapPost("api/users/signin", async Task<Results<BadRequest<string>, Ok<string>>>  
-                  (IUserService userService,  SignInUserDto signInUserDto) =>
+        group.MapPost("signin", async Task<Results<BadRequest<string>, Ok<string>>>
+            (IUserService userService, SignInUserDto signInUserDto) =>
         {
             var serviceResult = await userService.SignInUserAsync(signInUserDto);
-            
-            if(serviceResult.isFailure)
+
+            if (serviceResult.isFailure)
             {
                 return TypedResults.BadRequest(serviceResult.ErrorMessage);
             }
 
-            return TypedResults.Ok("Signed in Successfully!");
-        });  
+            return TypedResults.Ok(serviceResult.Data ?? "Signed in Successfully!");
+        });
 
-        app.MapPost("api/users/register", async Task<Results<BadRequest<string>, Created<string>>>  
+        group.MapPost("register", async Task<Results<BadRequest<string>, Created<string>>>
             (IUserService userService, RegisterUserDto registerUserDto) =>
         {
             var serviceResult = await userService.RegisterUserAsync(registerUserDto);
-            
-            if(serviceResult.isFailure)
+
+            if (serviceResult.isFailure)
             {
                 return TypedResults.BadRequest(serviceResult.ErrorMessage);
             }
 
-            return TypedResults.Created("/api/users/login", "Registered Successfully!");
+            return TypedResults.Created("/api/users/signin", "Registered Successfully!");
         });
 
         app.MapGet("/", () => Results.Redirect("/scalar/v1"));
-    } 
+    }
 }
