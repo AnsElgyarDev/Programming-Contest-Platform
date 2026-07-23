@@ -23,8 +23,11 @@ public class JwtTokenGenerator : IJwtTokenGenerator
     public string GenerateToken(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        
-        var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"] ?? "SUPER_SECRET_KEY_1234567890_JWT_KEY");
+
+        var secretKey = _config["Jwt:Key"] 
+            ?? throw new InvalidOperationException("JWT Secret Key is not configured in appsettings.json!");
+
+        var key = Encoding.UTF8.GetBytes(secretKey);
 
         var claims = new List<Claim>
         {
@@ -33,11 +36,16 @@ public class JwtTokenGenerator : IJwtTokenGenerator
             new(ClaimTypes.Name, user.UserName ?? string.Empty)
         };
 
+        var expiryDays = double.TryParse(_config["Jwt:DurationInDays"], out var days) ? days : 7;
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddDays(7), 
-            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
+            Expires = DateTime.UtcNow.AddDays(expiryDays),
+            SigningCredentials = new SigningCredentials(
+                new SymmetricSecurityKey(key), 
+                SecurityAlgorithms.HmacSha256Signature
+            ),
             Issuer = _config["Jwt:Issuer"],
             Audience = _config["Jwt:Audience"]
         };

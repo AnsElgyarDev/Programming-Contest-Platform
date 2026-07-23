@@ -21,7 +21,7 @@ public static class UserEndpoints
                 return TypedResults.BadRequest(serviceResult.ErrorMessage);
             }
 
-            return TypedResults.Ok(serviceResult.Data ?? "Signed in Successfully!");
+            return TypedResults.Ok(serviceResult.Data);
         });
 
         group.MapPost("register", async Task<Results<BadRequest<string>, Created<string>>>
