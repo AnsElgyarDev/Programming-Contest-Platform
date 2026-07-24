@@ -56,5 +56,20 @@ public static class UserEndpoints
             return  TypedResults.Ok();
 
         }).RequireAuthorization();
+
+        app.MapPut("/api/users/me", async Task<Results<NotFound<string>, BadRequest<string>, Ok<string>>> 
+                  (ClaimsPrincipal userContext, UpdateUserDto dto, IUserService userService) =>
+    {
+        int userId = userContext.GetUserId();
+
+        var result = await userService.UpdateUserAsync(userId, dto);
+
+        if (result.isFailure)
+        {
+            return TypedResults.NotFound(result.ErrorMessage);
+        }
+
+        return TypedResults.Ok(result.Data);
+    }).RequireAuthorization();
     }
 }

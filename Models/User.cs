@@ -1,8 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Programming_Contest_Platform.Data;
-
 namespace Programming_Contest_Platform.Entity;
 
 public class User: IdentityUser<int>

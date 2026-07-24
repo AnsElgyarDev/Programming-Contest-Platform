@@ -12,3 +12,10 @@ public record SignInUserDto
     string UserEmail, 
     string UserPassword
 );
+public record UpdateUserDto
+(
+    string? FullName,
+    string? Country,
+    string? Organization,
+    string? ProfilePictureUrl
+);

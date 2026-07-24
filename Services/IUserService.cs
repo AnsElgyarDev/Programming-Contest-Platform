@@ -9,4 +9,5 @@ public interface IUserService
     
     /* showing User Profile and user update to the acc and also delete the account. */
     public Task<ServiceResult<string>> DeleteUserAsync(int userId);
+    public Task<ServiceResult<string>> UpdateUserAsync(int userId, UpdateUserDto updateUserDto);
 }

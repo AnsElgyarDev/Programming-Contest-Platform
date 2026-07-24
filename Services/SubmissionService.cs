@@ -6,20 +6,20 @@ namespace Programming_Contest_Platform.Services;
 
 public class SubmissionService : ISubmissionService
 {
-    private readonly AppDbContext? _context;
-    public SubmissionService(AppDbContext? context)
+    private readonly AppDbContext _context;
+    public SubmissionService(AppDbContext context)
     {
         this._context = context;
     }
 
     public async Task<ICollection<ProblemSubmissionsDto>> GetProblemSubmissionsAsync(int ProblemId)
     {
-        return await _context!.Submissions
+        return await _context.Submissions
                     .AsNoTracking()
                     .Where(sub => sub.ProblemId == ProblemId) 
                     .Select(sub => new ProblemSubmissionsDto     
                     {
-                        userName = sub.User.UserName,
+                        userName = sub.User.UserName ?? "",
                         SubmissionStatus = sub.SubmissionState,
                         SubmittedAt = sub.SubmissionTime
                     })
@@ -28,7 +28,7 @@ public class SubmissionService : ISubmissionService
 
     public async Task<ICollection<SubmissionSummaryDto>> GetUserRecentSubmissionsAsync(int userId)
     {
-        return await _context!.Submissions
+        return await _context.Submissions
                                 .AsNoTracking()
                                 .Where(user => user.UserId == userId)
                                 .OrderByDescending(user => user.SubmissionTime)
