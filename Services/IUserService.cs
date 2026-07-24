@@ -8,4 +8,5 @@ public interface IUserService
     public Task<ServiceResult<string>> SignInUserAsync(SignInUserDto signInUserDto);
     
     /* showing User Profile and user update to the acc and also delete the account. */
+    public Task<ServiceResult<string>> DeleteUserAsync(int userId);
 }

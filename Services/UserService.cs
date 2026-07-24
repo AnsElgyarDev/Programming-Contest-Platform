@@ -1,7 +1,4 @@
-using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Helper;
@@ -10,13 +7,34 @@ namespace Programming_Contest_Platform.Services;
 
 public class UserService : IUserService
 {
-    private readonly UserManager<User>? _userManager;
+    private readonly UserManager<User> _userManager;
     private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    public UserService(UserManager<User>? userManager, IJwtTokenGenerator jwtTokenGenerator)
+    public UserService(UserManager<User> userManager, IJwtTokenGenerator jwtTokenGenerator)
     {
         this._userManager = userManager;
         this._jwtTokenGenerator = jwtTokenGenerator;
     }
+
+    public async Task<ServiceResult<string>> DeleteUserAsync(int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+
+        if (user is null)
+        {
+            return ServiceResult<string>.Failure("There is no User With This ID!");
+        }
+
+        var result = await _userManager.DeleteAsync(user);
+
+        if (!result.Succeeded)
+        {
+            var errorMessage = result.Errors.FirstOrDefault()?.Description ?? "Failed to delete the user.";
+            return ServiceResult<string>.Failure(errorMessage);
+        }
+
+        return ServiceResult<string>.Success("The Operation Completed Successfully!");
+    }
+
     public async Task<ServiceResult<string>> RegisterUserAsync(RegisterUserDto registerUserDto)
     {
         var existingEmail = await _userManager!.FindByEmailAsync(registerUserDto.UserEmail);

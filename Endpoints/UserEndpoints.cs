@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
+using Programming_Contest_Platform.Helper.ClaimsPrincipalExtensions;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
@@ -38,5 +40,21 @@ public static class UserEndpoints
         });
 
         app.MapGet("/", () => Results.Redirect("/scalar/v1"));
+
+        app.MapDelete("/api/users/me", async Task<Results<NotFound<string>, Ok>> 
+                    (ClaimsPrincipal user, IUserService userService) =>
+        {
+            int userId = user.GetUserId();
+
+            var isSuccess = await userService.DeleteUserAsync(userId);
+
+            if(isSuccess.isFailure)
+            {
+                return TypedResults.NotFound(isSuccess.ErrorMessage);
+            }
+
+            return  TypedResults.Ok();
+
+        }).RequireAuthorization();
     }
 }
