@@ -71,5 +71,6 @@ public static class UserEndpoints
 
         return TypedResults.Ok(result.Data);
     }).RequireAuthorization();
+    
     }
 }

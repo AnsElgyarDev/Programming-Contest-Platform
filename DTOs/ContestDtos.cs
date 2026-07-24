@@ -6,7 +6,8 @@ public class ShowContestDto
 {
     public  string ContestName { get; set; } = string.Empty;
     public DateTime contestStartTime;
-    public  DateTime contestEndTime;
+    public int DurationMinutes;
+    public DateTime contestEndTime;
 }
 
 public class ContestDetailsDto
