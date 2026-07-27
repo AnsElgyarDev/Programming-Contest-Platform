@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity.Data;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Helper.ClaimsPrincipalExtensions;
 using Programming_Contest_Platform.Services;
@@ -71,6 +72,11 @@ public static class UserEndpoints
 
         return TypedResults.Ok(result.Data);
     }).RequireAuthorization();
+
+    app.MapGet("", (LoginRequest loginRequest) =>
+    {
+        
+    });
     
     }
 }

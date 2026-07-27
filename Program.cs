@@ -1,3 +1,4 @@
+using DoctorsManagementSystem.Middlewares;
 using Microsoft.AspNetCore.Identity;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Endpoints;
@@ -27,9 +28,12 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionHandler>();
 app.UseMiddleware<RequestLogMiddleware>();
 app.UseHttpsRedirection();
-if (app.Environment.IsDevelopment())
+
+if (!app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference(); 
