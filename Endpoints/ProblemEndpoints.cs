@@ -27,5 +27,17 @@ public static class ProblemEndpoints
             
             return TypedResults.Ok(problems);
         });
+
+         group.MapGet("/{ProblemId}", async Task<Results<NotFound<string>, Ok<ProblemDetailsDto>>>
+        (IProblemService problemService, int ProblemId) =>
+        {
+            var problem = await problemService.GetProblem(ProblemId);
+            
+            if(problem is null)
+                return TypedResults.NotFound("There is No Problem with this Id!");
+            
+            return TypedResults.Ok(problem);
+        });
+        
     }
 }
