@@ -73,10 +73,10 @@ public static class UserEndpoints
         return TypedResults.Ok(result.Data);
     }).RequireAuthorization();
 
-    app.MapGet("", (LoginRequest loginRequest) =>
-    {
+    // app.MapGet("", (LoginRequest loginRequest) =>
+    // {
         
-    });
+    // });
     
     }
 }

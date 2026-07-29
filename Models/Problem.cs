@@ -7,7 +7,7 @@ public class Problem
     public int ProblemId { get; set; }
     public string ProblemName { get; set; } = string.Empty;
     public int ProblemLevel { get; set; }
-
+    public string ProblemDescription { get; set; } = string.Empty;
     public int ContestId { get; set; }
     public Contest Contest { get; set; } = null!;
 
