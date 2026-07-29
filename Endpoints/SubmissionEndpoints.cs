@@ -1,9 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Programming_Contest_Platform.DTO;
-using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;

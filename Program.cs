@@ -15,6 +15,7 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 {
@@ -29,8 +30,12 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
-app.UseMiddleware<GlobalExceptionHandler>();
+app.UseExceptionHandler();
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.UseMiddleware<RequestLogMiddleware>();
+
 app.UseHttpsRedirection();
 
 if (!app.Environment.IsDevelopment())

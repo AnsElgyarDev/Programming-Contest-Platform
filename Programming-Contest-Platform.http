@@ -1,6 +1,0 @@
-@Programming_Contest_Platform_HostAddress = http://localhost:5100
-
-GET {{Programming_Contest_Platform_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
