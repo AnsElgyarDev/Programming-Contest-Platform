@@ -14,6 +14,7 @@ public class ProblemDetailsDto
     public string ProblemName { get; set; } = string.Empty;
     public string ProblemDescription { get; set; } = string.Empty;   
     public int ProblemLevel { get; set; }   
+    public int ContestId { get; set; }
     public string ContestName { get; set; } = string.Empty;   
 }
 
