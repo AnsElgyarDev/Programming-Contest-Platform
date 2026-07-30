@@ -6,6 +6,8 @@ public class Submission
     public string SubmissionCode { get; set; } = string.Empty;
     public DateTime SubmissionTime { get; set; }
     public string SubmissionState { get; set; } = string.Empty;
+    public string ProblemCode { get; set; } = string.Empty;
+    public string Language { get; set; } = string.Empty;
     public int UserId { get; set; }
     public User User { get; set; } = null!;
 

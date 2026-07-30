@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.DTO;
+using Programming_Contest_Platform.Entity;
 
 namespace Programming_Contest_Platform.Services;
 
@@ -42,5 +43,33 @@ public class SubmissionService : ISubmissionService
                                 }).
                                 Take(10).
                                 ToListAsync();
+    }
+
+    public async Task<ServiceResult<int>> SubmitProblem(ProblemSubmissionDto problemDto)
+    {
+        var problem = await _context.Problems
+            .FirstOrDefaultAsync(p => p.ProblemId == problemDto.problemId);
+
+        if (problem == null)
+            return ServiceResult<int>.Failure("Problem not found.");
+
+        string initialStatus = string.IsNullOrWhiteSpace(problemDto.Code) 
+            ? "Wrong Answer" 
+            : "Accepted";
+
+        var submission = new Submission
+        {
+            ProblemId = problemDto.problemId,
+            UserId = problemDto.userId,
+            SubmissionCode = problemDto.Code,
+            Language = problemDto.Language,
+            SubmissionState = initialStatus,
+            SubmissionTime = DateTime.UtcNow
+        };
+
+        _context.Submissions.Add(submission);
+        await _context.SaveChangesAsync();
+
+        return ServiceResult<int>.Success(submission.SubmissionId); 
     }
 }

@@ -1,3 +1,4 @@
+using System.Net.Cache;
 using Programming_Contest_Platform.Entity;
 
 namespace Programming_Contest_Platform.DTO;
@@ -15,3 +16,11 @@ public class ProblemDetailsDto
     public int ProblemLevel { get; set; }   
     public string ContestName { get; set; } = string.Empty;   
 }
+
+public record ProblemSubmissionDto
+(
+    int userId,
+    int problemId,
+    string Language,
+    string Code 
+);
