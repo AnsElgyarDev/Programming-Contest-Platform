@@ -17,10 +17,10 @@ public class ProblemDetailsDto
     public string ContestName { get; set; } = string.Empty;   
 }
 
-public record ProblemSubmissionDto
-(
-    int userId,
-    int problemId,
-    string Language,
-    string Code 
-);
+public class ProblemSubmissionDto
+{
+    public int userId { get; set; }
+    public int problemId { get; set; }
+    public string Language { get; set; } = string.Empty;
+    public string Code { get; set; } = string.Empty;
+}

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Services;
 
@@ -41,6 +42,21 @@ public static class SubmissionEndpoints
             }
 
             return TypedResults.Ok(submissions);
+        });
+        
+        app.MapPost("api/problems/{problemId:int}/submissions", async 
+                   (ISubmissionService submissionService, ProblemSubmissionDto problemSubmissionDto, int problemId) =>
+        {
+            problemSubmissionDto.problemId = problemId; 
+
+                var result = await submissionService.SubmitProblem(problemSubmissionDto);
+                
+                if (result.isFailure)
+                {
+                    return Results.BadRequest(result.ErrorMessage);
+                }
+
+                return Results.Created($"/api/submissions/{result.Data}", new { Submissionstatus= result.Data });
         });
     }
 }
