@@ -27,5 +27,8 @@ public class SubmissionConfig : IEntityTypeConfiguration<Submission>
                .WithMany(problem => problem.Submissions)
                .HasForeignKey(sub => sub.ProblemId)
                .OnDelete(DeleteBehavior.Restrict);
-    }
+      
+       builder.Property(s => s.CompilerOutput)
+              .HasMaxLength(2000);
+       }
 }

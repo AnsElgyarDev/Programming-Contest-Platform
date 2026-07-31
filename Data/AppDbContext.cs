@@ -10,6 +10,7 @@ public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     public DbSet<Problem> Problems { get; set; }
     public DbSet<Contest> Contests { get; set; }
     public DbSet<Submission> Submissions { get; set; }
+    public DbSet<TestCase> TestCase { get; set; }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         base.OnConfiguring(optionsBuilder);

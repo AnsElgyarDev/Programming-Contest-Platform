@@ -24,5 +24,11 @@ public class ProblemConfig : IEntityTypeConfiguration<Problem>
                .WithMany(c => c.Problems)
                .HasForeignKey(p => p.ContestId)
                .IsRequired();
+
+       builder.Property(p => p.TimeLimitInSeconds)
+              .HasDefaultValue(1.0);
+
+       builder.Property(p => p.MemoryLimitInMB)
+              .HasDefaultValue(256);
     }
 }
