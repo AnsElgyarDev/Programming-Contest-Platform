@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Programming_Contest_Platform.Data;
 
@@ -11,9 +12,11 @@ using Programming_Contest_Platform.Data;
 namespace Programming_Contest_Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260731221212_Check the Matching")]
+    partial class ChecktheMatching
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,18 +225,9 @@ namespace Programming_Contest_Platform.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubmissionId"));
 
-                    b.Property<string>("CompilerOutput")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ExecutionTimeMs")
-                        .HasColumnType("int");
-
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("MemoryUsedKB")
-                        .HasColumnType("int");
 
                     b.Property<string>("ProblemCode")
                         .IsRequired()

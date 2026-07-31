@@ -8,6 +8,8 @@ public class Problem
     public string ProblemName { get; set; } = string.Empty;
     public int ProblemLevel { get; set; }
     public string ProblemDescription { get; set; } = string.Empty;
+    double TimeLimitInSeconds { get; set; }
+    int MemoryLimitInMB { get; set; }
     public int ContestId { get; set; }
     public Contest Contest { get; set; } = null!;
 

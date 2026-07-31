@@ -6,6 +6,9 @@ public class Submission
     public string SubmissionCode { get; set; } = string.Empty;
     public DateTime SubmissionTime { get; set; }
     public string SubmissionState { get; set; } = string.Empty;
+    public string? CompilerOutput { get; set; } = string.Empty;
+    public int MemoryUsedKB { get; set; }
+    public int ExecutionTimeMs { get; set; }
     public string ProblemCode { get; set; } = string.Empty;
     public string Language { get; set; } = string.Empty;
     public int UserId { get; set; }
