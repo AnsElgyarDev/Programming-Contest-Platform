@@ -20,7 +20,7 @@ public class AdminService : IAdminService
                 ErrorMessage = "There is no Problem"  
             };
 
-        await _context.Problems.AddAsync(problem);
+        _context.Problems.Add(problem);
         await _context.SaveChangesAsync();
         
         return new ServiceResult
@@ -39,10 +39,14 @@ public class AdminService : IAdminService
                 ErrorMessage = "Not found!"
             };
 
+        _context.Problems.Remove(problem);
+        _context.SaveChanges();
+        
         return new ServiceResult
         {
             isSuccess = true
         };
+
     }
 
 public async Task<ServiceResult> UpdateProblem(int problemId, ProblemDetailsDto problemDetailsDto)
