@@ -52,7 +52,7 @@ public class SubmissionService : ISubmissionService
 
         if (problem == null)
             return ServiceResult<int>.Failure("Problem not found.");
-
+            
         string initialStatus = string.IsNullOrWhiteSpace(problemDto.Code) 
             ? "Wrong Answer" 
             : "Accepted";

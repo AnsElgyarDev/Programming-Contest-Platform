@@ -46,4 +46,15 @@ public class ContestService : IContestService
                         })
                         .FirstOrDefaultAsync();
     }
+
+    public async Task<List<string>> ShowContestLanguage(int contestId)
+    {
+        var contest = await _context.Contests.FirstOrDefaultAsync(contest => contest.ContestId == contestId);
+        
+        if(contest is null)
+            return null!;
+
+        return contest.Languages;
+    }
+
 }

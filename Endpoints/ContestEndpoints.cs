@@ -32,6 +32,11 @@ public static class ContestEndpoints
 
             return TypedResults.Ok(contest);
         });
+
+        app.MapGet("/api/contests/{contestId:int}/Languages",(int contestId, IContestService contestService) =>
+        {
+            var Languages = contestService.ShowContestLanguage(contestId);
+        });
         
     }
 

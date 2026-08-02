@@ -15,6 +15,8 @@ public class ContestConfig : IEntityTypeConfiguration<Contest>
        builder.Property(c => c.ContestName)
               .HasMaxLength(100)
               .IsRequired();
+       
+       builder.Property(c => c.Languages);
 
        builder.Property(c => c.ContestLevel)
               .IsRequired();

@@ -1,7 +1,7 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Programming_Contest_Platform.DTO;
+using Programming_Contest_Platform.Helper;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
@@ -57,6 +57,12 @@ public static class SubmissionEndpoints
                 }
 
                 return Results.Created($"/api/submissions/{result.Data}", new { Submissionstatus= result.Data });
+        });
+
+        app.MapGet("api/problems/supported-languages", () =>
+        {
+            var languages = SupportedLanguages.All;
+            return TypedResults.Ok(languages);
         });
     }
 }

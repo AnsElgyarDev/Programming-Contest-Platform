@@ -7,5 +7,6 @@ public class Contest
     public int ContestLevel { get; set; }
     public DateTime ContestStartTime { get; set; }
     public DateTime ContestEndTime { get; set; }
+    public List<string> Languages { get; set; } = new();
     public ICollection<Problem> Problems { get; set; } = new List<Problem>();
 }
