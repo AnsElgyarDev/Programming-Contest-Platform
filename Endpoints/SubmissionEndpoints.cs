@@ -29,7 +29,7 @@ public static class SubmissionEndpoints
 
             return TypedResults.Ok(recentUserSubmissions);
 
-        }).RequireAuthorization();
+        });
 
         app.MapGet("api/problems/{problemId:int}/submissions", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSubmissionsDto>>>>
                  (ISubmissionService submissionService, int problemId) =>

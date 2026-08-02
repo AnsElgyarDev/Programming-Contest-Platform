@@ -177,6 +177,10 @@ namespace Programming_Contest_Platform.Migrations
                     b.Property<DateTime>("ContestStartTime")
                         .HasColumnType("datetime2");
 
+                    b.PrimitiveCollection<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ContestId");
 
                     b.ToTable("Contests", (string)null);

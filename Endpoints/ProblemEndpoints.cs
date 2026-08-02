@@ -14,7 +14,7 @@ public static class ProblemEndpoints
     public static async Task UseProblemEndpoints(this WebApplication app)
     {
         
-        var group = app.MapGroup("api/problems").WithTags("Users Authentication");
+        var group = app.MapGroup("api/problems");
         
         
         group.MapGet("", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSummaryDto>>>>

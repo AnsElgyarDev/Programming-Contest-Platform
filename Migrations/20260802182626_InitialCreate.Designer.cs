@@ -12,8 +12,8 @@ using Programming_Contest_Platform.Data;
 namespace Programming_Contest_Platform.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260730175233_Adding Properties in the Submissions")]
-    partial class AddingPropertiesintheSubmissions
+    [Migration("20260802182626_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -180,6 +180,10 @@ namespace Programming_Contest_Platform.Migrations
                     b.Property<DateTime>("ContestStartTime")
                         .HasColumnType("datetime2");
 
+                    b.PrimitiveCollection<string>("Languages")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ContestId");
 
                     b.ToTable("Contests", (string)null);
@@ -196,6 +200,11 @@ namespace Programming_Contest_Platform.Migrations
                     b.Property<int>("ContestId")
                         .HasColumnType("int");
 
+                    b.Property<int>("MemoryLimitInMB")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(256);
+
                     b.Property<string>("ProblemDescription")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -209,6 +218,11 @@ namespace Programming_Contest_Platform.Migrations
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<double>("TimeLimitInSeconds")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("float")
+                        .HasDefaultValue(1.0);
 
                     b.HasKey("ProblemId");
 
@@ -225,9 +239,19 @@ namespace Programming_Contest_Platform.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubmissionId"));
 
+                    b.Property<string>("CompilerOutput")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<int>("ExecutionTimeMs")
+                        .HasColumnType("int");
+
                     b.Property<string>("Language")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("MemoryUsedKB")
+                        .HasColumnType("int");
 
                     b.Property<string>("ProblemCode")
                         .IsRequired()
@@ -355,6 +379,35 @@ namespace Programming_Contest_Platform.Migrations
                     b.ToTable("Users", (string)null);
                 });
 
+            modelBuilder.Entity("TestCase", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ExpectedOutput")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Input")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsSample")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProblemId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProblemId");
+
+                    b.ToTable("TestCase");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
@@ -436,6 +489,17 @@ namespace Programming_Contest_Platform.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TestCase", b =>
+                {
+                    b.HasOne("Programming_Contest_Platform.Entity.Problem", "Problem")
+                        .WithMany("TestCases")
+                        .HasForeignKey("ProblemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Problem");
+                });
+
             modelBuilder.Entity("Programming_Contest_Platform.Entity.Contest", b =>
                 {
                     b.Navigation("Problems");
@@ -444,6 +508,8 @@ namespace Programming_Contest_Platform.Migrations
             modelBuilder.Entity("Programming_Contest_Platform.Entity.Problem", b =>
                 {
                     b.Navigation("Submissions");
+
+                    b.Navigation("TestCases");
                 });
 
             modelBuilder.Entity("Programming_Contest_Platform.Entity.User", b =>

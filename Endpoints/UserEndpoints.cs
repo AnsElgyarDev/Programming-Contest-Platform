@@ -56,7 +56,7 @@ public static class UserEndpoints
 
             return  TypedResults.Ok();
 
-        }).RequireAuthorization();
+        });
 
         app.MapPut("/api/users/me", async Task<Results<NotFound<string>, BadRequest<string>, Ok<string>>> 
                   (ClaimsPrincipal userContext, UpdateUserDto dto, IUserService userService) =>
@@ -71,7 +71,7 @@ public static class UserEndpoints
         }
 
         return TypedResults.Ok(result.Data);
-    }).RequireAuthorization();
+    });
 
     // app.MapGet("", (LoginRequest loginRequest) =>
     // {
