@@ -4,8 +4,6 @@ namespace Programming_Contest_Platform.Services;
 
 public interface IUserService
 {
-    public Task<ServiceResult<string>> RegisterUserAsync(RegisterUserDto registerUserDto);
-    public Task<ServiceResult<string>> SignInUserAsync(SignInUserDto signInUserDto);
     public Task<ServiceResult<string>> DeleteUserAsync(int userId);
     public Task<ServiceResult<string>> UpdateUserAsync(int userId, UpdateUserDto updateUserDto);
 }

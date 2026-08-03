@@ -1,16 +1,9 @@
 namespace  Programming_Contest_Platform.DTO;
 
-public record RegisterUserDto
+public record UserDto
 (
-    string UserEmail, 
     string UserPassword,
     string UserName
-);
-
-public record SignInUserDto
-(
-    string UserEmail, 
-    string UserPassword
 );
 public record UpdateUserDto
 (
