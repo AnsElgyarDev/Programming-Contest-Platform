@@ -1,58 +1,70 @@
-// using Programming_Contest_Platform.DTO;
-// using Programming_Contest_Platform.Entity;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client;
+using Programming_Contest_Platform.Data;
+using Programming_Contest_Platform.DTO;
+using Programming_Contest_Platform.Entity;
+using Programming_Contest_Platform.Helper;
 
-// namespace Programming_Contest_Platform.Services;
+namespace Programming_Contest_Platform.Services;
 
-// public class AuthService : IAuthService
-// {
-//     public async Task<ServiceResult<string>> RegisterUserAsync(RegisterUserDto registerUserDto)
-//     {
+public class AuthService : IAuthService
+{
+    private readonly AppDbContext _context;
+    
+    public AuthService(AppDbContext context)
+    {
+        _context  = context;
+    }
 
-//         var existingEmail = await _userManager!.FindByEmailAsync(registerUserDto.UserEmail);
+    public Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<User?> RegisterUserAsync(UserDto registerUserDto)
+    {
+        var existingUser = await _context.Users.AnyAsync(user => user.Username == registerUserDto.UserName);
         
-//         if(existingEmail is not null)
-//         {
-//             return ServiceResult<string>.Failure("There is already a user with this email.");
-//         }
+        if (existingUser)
+        {
+            return null;
+        }
 
-//         var user = new User
-//         {
-//             UserName = registerUserDto.UserName,
-//             Email = registerUserDto.UserEmail,
-//         };
+        var userToRegister = new User
+        {
+            Username = registerUserDto.UserName, 
+            Role = string.IsNullOrEmpty(registerUserDto.Role) ? "User" : registerUserDto.Role
+        };
 
-//         var result = await _userManager.CreateAsync(user, registerUserDto.UserPassword);
+        userToRegister.PasswordHash = new PasswordHasher<User>()
+            .HashPassword(userToRegister, registerUserDto.UserPassword);
 
-//         if (!result.Succeeded)
-//         {
-//             var errorMessage = result.Errors.FirstOrDefault()?.Description ?? "Registration failed.";
-//             return ServiceResult<string>.Failure(errorMessage);
-//         }
+        _context.Users.Add(userToRegister);
+        await _context.SaveChangesAsync();
 
-//         var token = _jwtTokenGenerator.GenerateToken(user);
+        return userToRegister;
+    }
 
-//         return ServiceResult<string>.Success(token);
-//     }
-
-//     public async Task<ServiceResult<string>> SignInUserAsync(SignInUserDto signInDto)
-//     {
-//         var user = await _userManager!.FindByEmailAsync(signInDto.UserEmail);        
+    public async Task<ServiceResult<string>> SignInUserAsync(UserDto signInDto)
+    {
+        // var user = await _userManager!.FindByEmailAsync(signInDto.UserEmail);        
         
-//         if(user is null)
-//         {
-//             return ServiceResult<string>.Failure("There is Something Wrong in Email or Password");
-//         }
+        // if(user is null)
+        // {
+        //     return ServiceResult<string>.Failure("There is Something Wrong in Email or Password");
+        // }
 
-//         var isPasswordValid = await _userManager.CheckPasswordAsync(user, signInDto.UserPassword);
+        // var isPasswordValid = await _userManager.CheckPasswordAsync(user, signInDto.UserPassword);
         
-//         if(!isPasswordValid)
-//         {
-//             return ServiceResult<String>.Failure("Invalid Email or Password!");   
-//         }
+        // if(!isPasswordValid)
+        // {
+        //     return ServiceResult<String>.Failure("Invalid Email or Password!");   
+        // }
 
-//         var token = _jwtTokenGenerator.GenerateToken(user);
+        // var token = _jwtTokenGenerator.GenerateToken(user);
 
-//         return ServiceResult<string>.Success(token);
+        // return ServiceResult<string>.Success(token);
 
-//     }
-// }
+    }
+}

@@ -5,6 +5,7 @@ namespace Programming_Contest_Platform.Services;
 
 public interface IAuthService
 {
-    public Task<ServiceResult<string>> RegisterUserAsync(UserDto registerUserDto);
+    public Task<User?> RegisterUserAsync(UserDto registerUserDto);
     public Task<ServiceResult<string>> SignInUserAsync(UserDto signInUserDto);
+    Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request);
 }
