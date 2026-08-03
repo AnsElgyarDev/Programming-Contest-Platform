@@ -55,4 +55,5 @@ app.UseMiddleware<RequestLogMiddleware>();
 await app.UseUserEndpoints();
 await app.UseContestEndpoints();
 await app.UseSubmissionEndpoints();
+await app.UseAuthEndpoints();
 app.Run();
