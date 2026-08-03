@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Endpoints;
+using Programming_Contest_Platform.Helper;
 using Programming_Contest_Platform.Middleware;
 using Programming_Contest_Platform.Services;
 using Scalar.AspNetCore;
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddProblemDetails();

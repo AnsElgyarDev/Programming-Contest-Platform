@@ -1,6 +1,6 @@
+using System.Net.Http.Headers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
@@ -11,15 +11,20 @@ namespace Programming_Contest_Platform.Services;
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
-    
-    public AuthService(AppDbContext context)
+    private readonly IJwtHelperService _jwtHelperService;
+    public AuthService(AppDbContext context, IJwtHelperService jwtHelperService)
     {
         _context  = context;
+        _jwtHelperService = jwtHelperService;
     }
 
-    public Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
+    public async Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
     {
-        throw new NotImplementedException();
+        var user = await _context.Users.FindAsync(request.UserId);
+        if (user is null || user.RefreshToken != request.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            return null;
+
+        return await _jwtHelperService.CreateTokenResponseAsync(user);
     }
 
     public async Task<User?> RegisterUserAsync(UserDto registerUserDto)
@@ -46,25 +51,22 @@ public class AuthService : IAuthService
         return userToRegister;
     }
 
-    public async Task<ServiceResult<string>> SignInUserAsync(UserDto signInDto)
+    public async Task<TokenResponseDto> SignInUserAsync(UserDto signInDto)
     {
-        // var user = await _userManager!.FindByEmailAsync(signInDto.UserEmail);        
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Username == signInDto.UserName);
+
+        if(user is null)
+        {
+            return null!;
+        }
+
+        var IsValidPassword = new PasswordHasher<User>().VerifyHashedPassword(user, user.PasswordHash, signInDto.UserPassword);
+
+        if(IsValidPassword is PasswordVerificationResult.Failed)
+        {
+            return null!;
+        }
         
-        // if(user is null)
-        // {
-        //     return ServiceResult<string>.Failure("There is Something Wrong in Email or Password");
-        // }
-
-        // var isPasswordValid = await _userManager.CheckPasswordAsync(user, signInDto.UserPassword);
-        
-        // if(!isPasswordValid)
-        // {
-        //     return ServiceResult<String>.Failure("Invalid Email or Password!");   
-        // }
-
-        // var token = _jwtTokenGenerator.GenerateToken(user);
-
-        // return ServiceResult<string>.Success(token);
-
+        return await _jwtHelperService.CreateTokenResponseAsync(user);
     }
 }
