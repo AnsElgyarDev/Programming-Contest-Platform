@@ -3,42 +3,38 @@ using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Helper;
 using FluentValidation;
+using Programming_Contest_Platform.Data;
 
 namespace Programming_Contest_Platform.Services;
 
 public class UserService : IUserService
 {
-    private readonly UserManager<User> _userManager;
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    public UserService(UserManager<User> userManager, IJwtTokenGenerator jwtTokenGenerator)
+    private readonly AppDbContext _context;
+
+    public UserService(AppDbContext context)
     {
-        this._userManager = userManager;
-        this._jwtTokenGenerator = jwtTokenGenerator;
+        _context = context;
     }
 
-    public async Task<ServiceResult<string>> DeleteUserAsync(int userId)
+    public async Task<ServiceResult<string>> DeleteUserAsync(Guid userId)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await _context.Users.FindAsync(userId);
 
         if (user is null)
         {
             return ServiceResult<string>.Failure("There is no User With This ID!");
         }
 
-        var result = await _userManager.DeleteAsync(user);
+        _context.Users.Remove(user);
+        
+        await _context.SaveChangesAsync();
 
-        if (!result.Succeeded)
-        {
-            var errorMessage = result.Errors.FirstOrDefault()?.Description ?? "Failed to delete the user.";
-            return ServiceResult<string>.Failure(errorMessage);
-        }
-
-        return ServiceResult<string>.Success("The Operation Completed Successfully!");
+        return ServiceResult<string>.Success("The Deletion Completed Successfully!");
     }
 
-    public async Task<ServiceResult<string>> UpdateUserAsync(int userId, UpdateUserDto updateUserDto)
+    public async Task<ServiceResult<string>> UpdateUserAsync(Guid userId, UpdateUserDto updateUserDto)
     {
-        var user = await _userManager.FindByIdAsync(userId.ToString());
+        var user = await _context.Users.FindAsync(userId);
         
         if(user is null)
         {
@@ -50,13 +46,7 @@ public class UserService : IUserService
         user.Organization = updateUserDto.Organization ?? user.Organization;
         user.ProfilePictureUrl = updateUserDto.ProfilePictureUrl ?? user.ProfilePictureUrl;
              
-        var result = await _userManager.UpdateAsync(user);
-
-        if(!result.Succeeded)
-        {
-            var errorMessage = result.Errors.FirstOrDefault()?.Description ?? "Failed to Update the user.";
-            return ServiceResult<string>.Failure(errorMessage);
-        }
+        await _context.SaveChangesAsync();
 
         return ServiceResult<string>.Success("Updated User Successfully!");
     }

@@ -24,12 +24,12 @@ public class JwtHelperService : IJwtHelperService
     {
         return new TokenResponseDto
         {
-            AccessToken = CreateAccessToken(user),
+            AccessToken = await CreateAccessToken(user),
             RefreshToken = await GenerateAndSaveRefreshTokenAsync(user)
         };
     }
 
-    public string CreateAccessToken(User user)
+    public async Task<string> CreateAccessToken(User user)
     {
         var claims = new List<Claim>
         {
@@ -39,7 +39,7 @@ public class JwtHelperService : IJwtHelperService
         };
 
         var key = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(_configuration["AppSettings:Token"]!));
+            Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -47,8 +47,8 @@ public class JwtHelperService : IJwtHelperService
         {
             Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddDays(1), // Expiry Time
-            Issuer = _configuration["AppSettings:Issuer"],
-            Audience = _configuration["AppSettings:Audience"],
+            Issuer = _configuration["Jwt:Issuer"],
+            Audience = _configuration["Jwt:Audience"],
             SigningCredentials = creds
         };
 

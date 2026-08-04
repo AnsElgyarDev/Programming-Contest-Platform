@@ -1,56 +1,49 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Helper.ClaimsPrincipalExtensions;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
 
-public static class UserEndpoints
+public static class UseUserEndpoints
 {
-    public static async Task UseUserEndpoints(this WebApplication app)
+    public static async Task MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("api/users").WithTags("Users Authentication");
+        var group = app.MapGroup("api/users")
+                       .WithTags("Users Management")
+                       .RequireAuthorization(); 
 
-        app.MapGet("/", () => Results.Redirect("/scalar/v1"));
-
-        app.MapDelete("/api/users/me", async Task<Results<NotFound<string>, Ok>> 
-                    (ClaimsPrincipal user, IUserService userService) =>
+        // DELETE /api/users/me
+        group.MapDelete("/me", async Task<Results<NotFound<string>, Ok>> 
+            (ClaimsPrincipal userContext, IUserService userService) =>
         {
-            int userId = user.GetUserId();
+            Guid userId = userContext.GetUserId();
 
             var isSuccess = await userService.DeleteUserAsync(userId);
 
-            if(isSuccess.isFailure)
+            if (isSuccess.isFailure)
             {
                 return TypedResults.NotFound(isSuccess.ErrorMessage);
             }
 
-            return  TypedResults.Ok();
-
+            return TypedResults.Ok();
         });
 
-    app.MapPut("/api/users/me", async Task<Results<NotFound<string>, BadRequest<string>, Ok<string>>> 
-                  (ClaimsPrincipal userContext, UpdateUserDto dto, IUserService userService) =>
-    {
-        int userId = userContext.GetUserId();
-
-        var result = await userService.UpdateUserAsync(userId, dto);
-
-        if (result.isFailure)
+        // PUT /api/users/me
+        group.MapPut("/me", async Task<Results<NotFound<string>, BadRequest<string>, Ok<string>>> 
+            (ClaimsPrincipal userContext, UpdateUserDto dto, IUserService userService) =>
         {
-            return TypedResults.NotFound(result.ErrorMessage);
-        }
+            Guid userId = userContext.GetUserId();
 
-        return TypedResults.Ok(result.Data);
-    });
+            var result = await userService.UpdateUserAsync(userId, dto);
 
-    // app.MapGet("", (LoginRequest loginRequest) =>
-    // {
-        
-    // });
-    
+            if (result.isFailure)
+            {
+                return TypedResults.NotFound(result.ErrorMessage);
+            }
+
+            return TypedResults.Ok(result.Data);
+        });
     }
 }

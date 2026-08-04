@@ -20,7 +20,7 @@ public class SubmissionService : ISubmissionService
                     .Where(sub => sub.ProblemId == ProblemId) 
                     .Select(sub => new ProblemSubmissionsDto     
                     {
-                        userName = sub.User.UserName ?? "",
+                        userName = sub.User.Username ?? "",
                         SubmissionStatus = sub.SubmissionState,
                         SubmittedAt = sub.SubmissionTime
                     })

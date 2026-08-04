@@ -1,11 +1,11 @@
 using System.Text;
-using DoctorsManagementSystem.Middlewares;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Endpoints;
 using Programming_Contest_Platform.Helper;
 using Programming_Contest_Platform.Middleware;
+using Programming_Contest_Platform.Middlewares;
 using Programming_Contest_Platform.Services;
 using Scalar.AspNetCore;
 
@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddAuthorization();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddProblemDetails();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
@@ -32,7 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"]!))
+                        Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
     };
 });
 
@@ -52,7 +53,7 @@ app.UseMiddleware<RequestLogMiddleware>();
 
 
 
-await app.UseUserEndpoints();
+await app.MapUserEndpoints();
 await app.UseContestEndpoints();
 await app.UseSubmissionEndpoints();
 await app.UseAuthEndpoints();

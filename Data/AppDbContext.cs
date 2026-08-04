@@ -5,8 +5,9 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Programming_Contest_Platform.Data;
 
-public class AppDbContext : IdentityDbContext<User, IdentityRole<int>, int>
+public class AppDbContext : DbContext
 {
+    public DbSet<User> Users { get; set; }
     public DbSet<Problem> Problems { get; set; }
     public DbSet<Contest> Contests { get; set; }
     public DbSet<Submission> Submissions { get; set; }

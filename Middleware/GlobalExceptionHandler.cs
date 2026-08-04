@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
-namespace DoctorsManagementSystem.Middlewares;
+namespace Programming_Contest_Platform.Middlewares;
 
 public class GlobalExceptionHandler : IExceptionHandler
 {
