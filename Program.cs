@@ -13,12 +13,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddOpenApi();
+builder.Services.AddAuthorization();
+builder.Services.AddProblemDetails();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddAuthorization();
 builder.Services.AddScoped<IContestService, ContestService>();
-builder.Services.AddProblemDetails();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -43,6 +44,7 @@ app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
     app.MapScalarApiReference(); 
 }
 
