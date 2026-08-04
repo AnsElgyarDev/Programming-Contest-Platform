@@ -27,7 +27,7 @@ public class SubmissionService : ISubmissionService
                     .ToListAsync();
     }
 
-    public async Task<ICollection<SubmissionSummaryDto>> GetUserRecentSubmissionsAsync(int userId)
+    public async Task<ICollection<SubmissionSummaryDto>> GetUserRecentSubmissionsAsync(Guid userId)
     {
         return await _context.Submissions
                                 .AsNoTracking()

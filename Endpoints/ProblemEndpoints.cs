@@ -1,10 +1,5 @@
-using System.Globalization;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Programming_Contest_Platform.DTO;
-using Programming_Contest_Platform.Helper.ClaimsPrincipalExtensions;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
@@ -15,7 +10,6 @@ public static class ProblemEndpoints
     {
         
         var group = app.MapGroup("api/problems");
-        
         
         group.MapGet("", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSummaryDto>>>>
         (IProblemService problemService) =>

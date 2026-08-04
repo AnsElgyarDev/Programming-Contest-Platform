@@ -15,7 +15,7 @@ public static class SubmissionEndpoints
         {
             var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            if (userIdClaim is null || !int.TryParse(userIdClaim, out int userId))
+            if (userIdClaim is null || !Guid.TryParse(userIdClaim, out Guid userId))
             {
                 return TypedResults.NotFound("Invalid or missing user ID in token.");
             }
