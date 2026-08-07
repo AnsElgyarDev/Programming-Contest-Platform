@@ -21,9 +21,19 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContestService, ContestService>();
+builder.Services.AddScoped<ISessionManager, SessionManager>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddAppPolicies();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);  
+    options.Cookie.Name = ".ECommerceApp.Session";
+    options.Cookie.HttpOnly = true;                  
+    options.Cookie.IsEssential = true;                
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
+    options.Cookie.SameSite = SameSiteMode.Strict;    
+});
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
@@ -44,6 +54,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.UseRouting();
+
+app.useSession();
+
+app.UseAuthEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
