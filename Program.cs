@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddAppPolicies();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {

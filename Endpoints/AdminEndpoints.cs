@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
+using Programming_Contest_Platform.Helper;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
@@ -28,7 +29,7 @@ public static class AdminEndpoints
             };
 
             return TypedResults.Created($"/api/admin/problems/{problem.ProblemId}", problemToReturn);
-        });
+        }).RequireAuthorization(AppPolicies.AdminOnly);
 
         group.MapPut("{problemId:int}", async Task<Results<BadRequest<string>, NotFound<string>, Ok<ProblemSummaryDto>>>
             (int problemId, ProblemDetailsDto problemDetailsDto, IAdminService adminService) =>
@@ -52,7 +53,7 @@ public static class AdminEndpoints
             };
 
             return TypedResults.Ok(problemToReturn);
-        });
+        }).RequireAuthorization(AppPolicies.AdminOnly);
 
         group.MapDelete("{problemId:int}", async Task<Results<NotFound<string>, NoContent>>
             (int problemId, IAdminService adminService) =>
@@ -65,7 +66,7 @@ public static class AdminEndpoints
             }
 
             return TypedResults.NoContent();
-        });
+        }).RequireAuthorization(AppPolicies.AdminOnly);
 
         return app;
     }
