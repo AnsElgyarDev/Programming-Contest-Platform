@@ -1,6 +1,6 @@
 namespace Programming_Contest_Platform.Services;
 
-public interface SessionManager
+public interface ISessionManager
 {
     // user Preferences 
     string GetUserTheme();

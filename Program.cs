@@ -56,9 +56,9 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseRouting();
 
-app.useSession();
+app.UseSession();
 
-app.UseAuthEndpoints();
+app?.UseAuthEndpoints();
 
 if (app.Environment.IsDevelopment())
 {

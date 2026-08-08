@@ -1,8 +1,12 @@
-public class SessionManager
+using Programming_Contest_Platform.Services;
+using Scalar.AspNetCore;
+
+public class SessionManager : ISessionManager
 {
     public string GetUserTheme()
     {
-        return HttpContext.Request.Cookies[ThemeCookieKey] ?? "Light"; 
+        // return HttpContext.Request.Cookies[ThemeCookieKey] ?? "Light"; 
+        return "";
     }
 
     public void SetUserTheme(string theme)
@@ -15,6 +19,6 @@ public class SessionManager
             SameSite = SameSiteMode.Strict
         };
 
-        HttpContext.Response.Cookies.Append(ThemeCookieKey, theme, cookieOptions);
+        // HttpContext.Response.Cookies.Append(ThemeMode.Dark, theme, cookieOptions);
     }
 }
