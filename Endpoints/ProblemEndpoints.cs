@@ -11,7 +11,7 @@ public static class ProblemEndpoints
         
         var group = app.MapGroup("api/problems");
         
-        group.MapGet("", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSummaryDto>>>>
+        group.MapGet("/", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSummaryDto>>>>
         (IProblemService problemService) =>
         {
             var problems = await problemService.GetAllProblems();

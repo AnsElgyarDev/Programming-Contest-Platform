@@ -59,6 +59,8 @@ app.UseRouting();
 
 app.UseSession();
 
+app.MapGet("/", () => Results.Redirect("/scalar/v1"))
+   .ExcludeFromDescription();
 
 if (app.Environment.IsDevelopment())
 {
@@ -72,10 +74,8 @@ app.UseHttpsRedirection();
 app.UseMiddleware<RequestLogMiddleware>();
 
 
-
 await app.UseAuthEndpoints();
 await app.MapUserEndpoints();
 await app.UseContestEndpoints();
 await app.UseSubmissionEndpoints();
-await app.UseAuthEndpoints();
 app.Run();

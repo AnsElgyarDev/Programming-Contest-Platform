@@ -11,8 +11,6 @@ public static class AuthEndpoints
     {
         var group = app.MapGroup("api/users").WithTags("Users Authentication");
         
-        app.MapGet("/", () => Results.Redirect("/scalar/v1"));    
-        
         group.MapPost("/register", async Task<Results<BadRequest<string>, Created<User?>>>
             (IAuthService userService, UserDto registerUserDto) =>
         {

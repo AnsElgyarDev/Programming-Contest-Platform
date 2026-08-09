@@ -4,6 +4,7 @@ using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Helper;
 using FluentValidation;
 using Programming_Contest_Platform.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Programming_Contest_Platform.Services;
 
@@ -14,6 +15,25 @@ public class UserService : IUserService
     public UserService(AppDbContext context)
     {
         _context = context;
+    }        
+
+    public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .Where(u => u.Id == userId)
+            .Select(user => new UserProfileDto
+            {
+                Username = user.Username,
+                FullName = user.FullName,
+                Country = user.Country,
+                Organization = user.Organization,
+                ProfilePictureUrl = user.ProfilePictureUrl,
+                UserRating = user.UserRating,
+                MaxRating = user.MaxRating,
+                SolvedProblemsCount = user.SolvedProblemsCount
+            })
+            .FirstOrDefaultAsync();
     }
 
     public async Task<ServiceResult<string>> DeleteUserAsync(Guid userId)

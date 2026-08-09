@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
@@ -14,6 +15,23 @@ public static class UseUserEndpoints
                        .WithTags("Users Management")
                        .RequireAuthorization(); 
 
+        // GET /api/users/me
+        group.MapGet("/me", async Task<Results<NotFound<string>, Ok<UserProfileDto>>>
+                    (ClaimsPrincipal claimsPrincipal, IUserService userService) =>
+        {
+            var userId = claimsPrincipal.GetUserId();
+
+            var profile = await userService.GetUserProfileAsync(userId);
+
+            if (profile is null)
+            {
+                return TypedResults.NotFound("User profile not found.");
+            }
+
+            return TypedResults.Ok(profile);
+
+        }).RequireAuthorization();
+        
         // DELETE /api/users/me
         group.MapDelete("/me", async Task<Results<NotFound<string>, Ok>> 
             (ClaimsPrincipal userContext, IUserService userService) =>
