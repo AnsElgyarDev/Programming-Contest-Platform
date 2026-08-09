@@ -22,6 +22,7 @@ builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddScoped<ISessionManager, SessionManager>();
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddAppPolicies();
@@ -58,7 +59,6 @@ app.UseRouting();
 
 app.UseSession();
 
-app?.UseAuthEndpoints();
 
 if (app.Environment.IsDevelopment())
 {
@@ -73,6 +73,7 @@ app.UseMiddleware<RequestLogMiddleware>();
 
 
 
+await app.UseAuthEndpoints();
 await app.MapUserEndpoints();
 await app.UseContestEndpoints();
 await app.UseSubmissionEndpoints();
