@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
@@ -8,7 +9,7 @@ namespace Programming_Contest_Platform.Endpoints;
 
 public static class AdminEndpoints
 {
-    public static WebApplication MapAdminEndpoints(this WebApplication app)
+    public async static Task MapAdminEndpoints(this WebApplication app)
     {
         var group = app.MapGroup("api/admin/problems").WithTags("Admin Problems Management");
 
@@ -66,8 +67,7 @@ public static class AdminEndpoints
             }
 
             return TypedResults.NoContent();
-        }).RequireAuthorization(AppPolicies.AdminOnly);
 
-        return app;
+        }).RequireAuthorization(AppPolicies.AdminOnly);
     }
 }

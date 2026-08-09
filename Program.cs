@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -20,6 +21,8 @@ builder.Services.AddProblemDetails();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProblemService, ProblemService>();
+builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddScoped<IContestService, ContestService>();
 builder.Services.AddScoped<ISessionManager, SessionManager>();
 builder.Services.AddDistributedMemoryCache();
@@ -66,6 +69,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference(); 
+
 }
 
 app.UseAuthentication();
@@ -77,5 +81,7 @@ app.UseMiddleware<RequestLogMiddleware>();
 await app.UseAuthEndpoints();
 await app.MapUserEndpoints();
 await app.UseContestEndpoints();
+await app.UseProblemEndpoints();
+await app.MapAdminEndpoints();
 await app.UseSubmissionEndpoints();
 app.Run();
