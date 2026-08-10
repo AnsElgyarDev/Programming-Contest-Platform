@@ -1,11 +1,3 @@
-using System.Net.Http.Headers;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Programming_Contest_Platform.Data;
-using Programming_Contest_Platform.DTO;
-using Programming_Contest_Platform.Entity;
-using Programming_Contest_Platform.Helper;
-
 namespace Programming_Contest_Platform.Services;
 
 public class AuthService : IAuthService

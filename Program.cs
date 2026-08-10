@@ -55,6 +55,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     };
 });
 
+var encryptionSettings = new
+{
+    _key = builder.Configuration["SecretKey:Value"],  
+};
+
 var app = builder.Build();
 
 app.UseExceptionHandler();
