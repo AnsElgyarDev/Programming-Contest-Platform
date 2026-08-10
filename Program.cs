@@ -1,9 +1,8 @@
-using System.ComponentModel;
-using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Programming_Contest_Platform.Data;
+using Programming_Contest_Platform.Data.Configurations;
 using Programming_Contest_Platform.Endpoints;
 using Programming_Contest_Platform.Helper;
 using Programming_Contest_Platform.Middleware;
@@ -28,6 +27,10 @@ builder.Services.AddScoped<ISessionManager, SessionManager>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.Configure<EncryptionSettings>(
+    builder.Configuration.GetSection("EncryptionSettings"));
+
+builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddAppPolicies();
 builder.Services.AddSession(options =>
 {
@@ -57,7 +60,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var encryptionSettings = new
 {
-    _key = builder.Configuration["SecretKey:Value"],  
+    _key = builder.Configuration["EncryptionSettings:Key"]
 };
 
 var app = builder.Build();
