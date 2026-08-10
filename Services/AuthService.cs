@@ -1,13 +1,22 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Programming_Contest_Platform.Data;
+using Programming_Contest_Platform.DTO;
+using Programming_Contest_Platform.Entity;
+using Programming_Contest_Platform.Helper;
+
 namespace Programming_Contest_Platform.Services;
 
 public class AuthService : IAuthService
 {
     private readonly AppDbContext _context;
+    private readonly IEncryptionService _encryptionService;
     private readonly IJwtHelperService _jwtHelperService;
-    public AuthService(AppDbContext context, IJwtHelperService jwtHelperService)
+    public AuthService(AppDbContext context, IJwtHelperService jwtHelperService, IEncryptionService encryptionService)
     {
-        _context  = context;
+        _context = context;
         _jwtHelperService = jwtHelperService;
+        _encryptionService = encryptionService;
     }
 
     public async Task<TokenResponseDto?> RefreshTokenAsync(RefreshTokenRequestDto request)
@@ -36,7 +45,7 @@ public class AuthService : IAuthService
 
         userToRegister.PasswordHash = new PasswordHasher<User>()
             .HashPassword(userToRegister, registerUserDto.UserPassword);
-
+        registerUserDto.UserName = _encryptionService.Encrypt(registerUserDto.UserName);
         _context.Users.Add(userToRegister);
         await _context.SaveChangesAsync();
 

@@ -11,11 +11,13 @@ namespace Programming_Contest_Platform.Services;
 public class UserService : IUserService
 {
     private readonly AppDbContext _context;
+    private readonly IEncryptionService _encryptionService;
 
-    public UserService(AppDbContext context)
+    public UserService(AppDbContext context, IEncryptionService encryptionService)
     {
         _context = context;
-    }        
+        _encryptionService = encryptionService;
+    }
 
     public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId)
     {
@@ -24,7 +26,7 @@ public class UserService : IUserService
             .Where(u => u.Id == userId)
             .Select(user => new UserProfileDto
             {
-                Username = user.Username,
+                Username = _encryptionService.Decrypt(user.Username),
                 FullName = user.FullName,
                 Country = user.Country,
                 Organization = user.Organization,

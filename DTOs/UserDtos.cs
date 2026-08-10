@@ -1,11 +1,11 @@
 namespace  Programming_Contest_Platform.DTO;
 
-public record UserDto
-(
-    string UserPassword,
-    string UserName,
-    string Role
-);
+public class UserDto
+{
+    public string UserPassword {get; set;} = string.Empty;
+    public string UserName = string.Empty;
+    public string Role = string.Empty;
+}
 
 public record UpdateUserDto
 (
