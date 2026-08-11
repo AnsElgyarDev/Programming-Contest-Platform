@@ -38,17 +38,18 @@ public class AuthService : IAuthService
         }
 
         var userToRegister = new User
-        {
-            Username = registerUserDto.UserName, 
+        { 
             Role = string.IsNullOrEmpty(registerUserDto.Role) ? "User" : registerUserDto.Role
         };
 
         userToRegister.PasswordHash = new PasswordHasher<User>()
-            .HashPassword(userToRegister, registerUserDto.UserPassword);
-        registerUserDto.UserName = _encryptionService.Encrypt(registerUserDto.UserName);
+            .HashPassword(userToRegister, registerUserDto.UserPassword).ToString();
+        
+        userToRegister.Username = _encryptionService.Encrypt(registerUserDto.UserName).ToString();
+        
         _context.Users.Add(userToRegister);
+        
         await _context.SaveChangesAsync();
-
         return userToRegister;
     }
 
