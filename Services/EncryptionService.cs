@@ -20,17 +20,22 @@ public class EncryptionService : IEncryptionService
         using var aes = Aes.Create();
         aes.Key = _key;
         aes.GenerateIV();
+         // responsible for preparing the Formula of Encryption that will convert the data from [ PlainText ] to [ ChipherText ]
         using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+        // Instead of Writing the Whole Encryption in the Hard Disk it uses MemoryStream to Transfer Some of encrypted bytes at a time in memory
         using var ms = new MemoryStream();
-        
-        ms.Write(aes.IV, 0, aes.IV.Length);
-
+        // writes from the IV from its 0 index till its length in the ms  
+        ms.Write(aes.IV, 0, aes.IV.Length); 
+        // using CryptoStream to act as Bridge between the data and the MemoryStream with the Writemode 
+        // that means that the data will be encrypted based on the encryptor and written in the MemoryStream 
         using (var cs = new CryptoStream(ms, encryptor, CryptoStreamMode.Write))
+        // StremWriter To Convert the String To byte[] and Vice versa   
         using (var sw = new StreamWriter(cs))
         {
+            // send to the cs object and the results written to it   
             sw.Write(plainText);
         }
-
+        
         return Convert.ToBase64String(ms.ToArray());
     }
 
