@@ -34,7 +34,7 @@ builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddAppPolicies();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(20);  
+    options.IdleTimeout = TimeSpan.FromMinutes(     20);  
     options.Cookie.Name = ".ECommerceApp.Session";
     options.Cookie.HttpOnly = true;                  
     options.Cookie.IsEssential = true;                

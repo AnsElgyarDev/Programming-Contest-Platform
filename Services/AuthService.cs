@@ -39,7 +39,7 @@ public class AuthService : IAuthService
 
         var userToRegister = new User
         { 
-            Role = string.IsNullOrEmpty(registerUserDto.Role) ? "User" : registerUserDto.Role
+            Role = string.IsNullOrEmpty(registerUserDto.Role) ? "User" : registerUserDto.Role,
         };
 
         userToRegister.PasswordHash = new PasswordHasher<User>()
