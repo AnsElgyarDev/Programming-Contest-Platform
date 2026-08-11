@@ -28,7 +28,9 @@ public static class ProblemEndpoints
             var problem = await problemService.GetProblem(ProblemId);
             
             if(problem is null)
+            {
                 return TypedResults.NotFound("There is No Problem with this Id!");
+            }
             
             return TypedResults.Ok(problem);
         });

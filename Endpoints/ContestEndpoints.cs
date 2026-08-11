@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http.HttpResults;
+    using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Services;
 
@@ -33,9 +33,17 @@ public static class ContestEndpoints
             return TypedResults.Ok(contest);
         });
 
-        app.MapGet("/api/contests/{contestId:int}/Languages",(int contestId, IContestService contestService) =>
+        app.MapGet("/api/contests/{contestId:int}/Languages", async Task<Results<NotFound<string>, Ok<List<string>>>>
+                  (int contestId, IContestService contestService) =>
         {
-            var Languages = contestService.ShowContestLanguage(contestId);
+            var Languages = await contestService.ShowContestLanguage(contestId);
+            
+            if(Languages is null)
+            {
+                return TypedResults.NotFound("There is No Contest with this Id");
+            }
+
+            return TypedResults.Ok(Languages); 
         });
         
     }

@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Helper;
+using Programming_Contest_Platform.Helper.ClaimsPrincipalExtensions;
 using Programming_Contest_Platform.Services;
 
 namespace Programming_Contest_Platform.Endpoints;
@@ -14,12 +15,7 @@ public static class SubmissionEndpoints
             (ISubmissionService submissionService, ClaimsPrincipal user) =>
         {
             var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userIdClaim is null || !Guid.TryParse(userIdClaim, out Guid userId))
-            {
-                return TypedResults.NotFound("Invalid or missing user ID in token.");
-            }
-
+            var userId = ClaimsPrincipalExtensions.GetUserId(user);
             var recentUserSubmissions = await submissionService.GetUserRecentSubmissionsAsync(userId);
             
             if (recentUserSubmissions is null || !recentUserSubmissions.Any())
@@ -29,7 +25,7 @@ public static class SubmissionEndpoints
 
             return TypedResults.Ok(recentUserSubmissions);
 
-        });
+        }).RequireAuthorization();
 
         app.MapGet("api/problems/{problemId:int}/submissions", async Task<Results<NotFound<string>, Ok<ICollection<ProblemSubmissionsDto>>>>
                  (ISubmissionService submissionService, int problemId) =>

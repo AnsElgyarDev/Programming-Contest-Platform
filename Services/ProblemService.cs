@@ -25,6 +25,11 @@ public class ProblemService : IProblemService
     {
         var problem = await _context.Problems
                                 .FindAsync(problemId);
+        
+        if(problem is null)
+        {
+            return null!;    
+        }
 
         return new ProblemDetailsDto 
         {

@@ -52,9 +52,11 @@ public class ContestService : IContestService
         var contest = await _context.Contests.FirstOrDefaultAsync(contest => contest.ContestId == contestId);
         
         if(contest is null)
+        {
             return null!;
+        }
 
-        return contest.Languages;
+        return contest.Languages ?? new List<string>();
     }
 
 }
