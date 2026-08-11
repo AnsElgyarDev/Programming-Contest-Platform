@@ -12,14 +12,14 @@ public class EncryptionService : IEncryptionService
     {
         _key = Convert.FromBase64String(options.Value.Key);
     }
+
     public string Encrypt(string plainText)
     {
         if (string.IsNullOrEmpty(plainText)) return plainText;
 
         using var aes = Aes.Create();
         aes.Key = _key;
-        aes.GenerateIV(); 
-        
+        aes.GenerateIV();
         using var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
         using var ms = new MemoryStream();
         
@@ -52,6 +52,6 @@ public class EncryptionService : IEncryptionService
         using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
         using var sr = new StreamReader(cs);
 
-        return sr.ReadToEnd();
+        return sr.ReadToEnd().ToString();
     }
 }
