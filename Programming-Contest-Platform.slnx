@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="Programming-Contest-Platform.Tests/Programming-Contest-Platform.Tests.csproj" />
-  <Project Path="Programming-Contest-Platform/Programming-Contest-Platform.csproj" />
+  <Project Path="tests/Programming-Contest-Platform.Tests/Programming-Contest-Platform.Tests.csproj" />
+  <Project Path="src/Programming-Contest-Platform/Programming-Contest-Platform.csproj" />
 </Solution>
