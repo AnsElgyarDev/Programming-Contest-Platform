@@ -1,7 +1,5 @@
-using Microsoft.AspNetCore.Identity;
 using Programming_Contest_Platform.DTO;
 using Programming_Contest_Platform.Entity;
-using Programming_Contest_Platform.Helper;
 using FluentValidation;
 using Programming_Contest_Platform.Data;
 using Microsoft.EntityFrameworkCore;
