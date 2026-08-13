@@ -27,10 +27,14 @@ public class UserTests
     [Fact]
     public async Task GetUserProfileAsync_WhenUserIdIsNull_ShouldReturnNull()
     {
+        // Arrange 
         Guid? userId = null;
 
+        // Act 
         var result = await _sut.GetUserProfileAsync(userId ?? Guid.Empty);
 
+        // Assert 
         Assert.Null(result);
     }
+    
 }

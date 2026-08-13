@@ -19,6 +19,11 @@ public class UserService : IUserService
 
     public async Task<UserProfileDto?> GetUserProfileAsync(Guid? userId)
     {
+        if (userId is null || userId == Guid.Empty)
+        {
+            return null;
+        }
+        
         return await _context.Users
             .AsNoTracking()
             .Where(u => u.Id == userId)
