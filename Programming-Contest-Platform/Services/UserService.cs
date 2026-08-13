@@ -17,7 +17,7 @@ public class UserService : IUserService
         _encryptionService = encryptionService;
     }
 
-    public async Task<UserProfileDto?> GetUserProfileAsync(Guid userId)
+    public async Task<UserProfileDto?> GetUserProfileAsync(Guid? userId)
     {
         return await _context.Users
             .AsNoTracking()
