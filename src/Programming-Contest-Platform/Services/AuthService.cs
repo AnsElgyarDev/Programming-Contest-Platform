@@ -44,9 +44,7 @@ public class AuthService : IAuthService
 
         userToRegister.PasswordHash = new PasswordHasher<User>()
             .HashPassword(userToRegister, registerUserDto.UserPassword).ToString();
-        
-        userToRegister.Username = _encryptionService.Encrypt(registerUserDto.UserName).ToString();
-        
+                
         _context.Users.Add(userToRegister);
         
         await _context.SaveChangesAsync();
@@ -54,8 +52,8 @@ public class AuthService : IAuthService
     }
 
     public async Task<TokenResponseDto> SignInUserAsync(UserDto signInDto)
-    {
-        var user = await _context.Users.FirstOrDefaultAsync(user => _encryptionService.Decrypt(user.Username) == signInDto.UserName);
+    {        
+        var user = await _context.Users.FirstOrDefaultAsync(user => user.Username == signInDto.UserName);
 
         if(user is null)
         {

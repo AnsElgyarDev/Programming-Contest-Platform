@@ -1,11 +1,10 @@
-using System.Runtime.InteropServices.Marshalling;
-using Azure.Core.Pipeline;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
+using Xunit;
 using Moq;
+using Microsoft.EntityFrameworkCore;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Services;
+
 public class UserTests
 {
     private readonly AppDbContext _context;
@@ -17,7 +16,7 @@ public class UserTests
         var options = new DbContextOptionsBuilder<AppDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
-            
+
         _context = new AppDbContext(options);
 
         _encryptionServiceMock = new Mock<IEncryptionService>();
@@ -35,33 +34,34 @@ public class UserTests
     }
 
     [Fact]
-    public async Task GetUserProfileAsync_WhenUserExists_ShouldReturnUser()
+    public async Task GetUserProfileAsync_WhenUserExists_ShouldReturnUserWithDecryptedName()
     {
-        Guid UserId = Guid.NewGuid();
-        string? FullName = "Ans Elgyar";
-        string PasswordHash = "";
-        string Role = "User";
-        string encryptedName = "ABCD";
-        string decryptedName = "Ans Taher";
-        var user = new User
+        // 1. ARRANGE
+        Guid userId = Guid.NewGuid();
+        string encryptedUsername = "ABCD";
+        string decryptedUsername = "Ans Taher";
+
+        var userInDb = new User
         {
-            Id = UserId,
-            FullName = FullName,
-            Username = encryptedName,
-            PasswordHash = PasswordHash, 
-            Role = Role
+            Id = userId,
+            FullName = "Ans Elgyar",
+            Username = encryptedUsername, 
+            PasswordHash = "hash123", 
+            Role = "User"
         };
 
+        _context.Users.Add(userInDb);
+        await _context.SaveChangesAsync();
+
         _encryptionServiceMock
-                .Setup(repo => repo.Encrypt(encryptedName))
-                .Returns(decryptedName);
+            .Setup(x => x.Decrypt(encryptedUsername))
+            .Returns(decryptedUsername);
 
-        user.Username = decryptedName;
+        // 2. ACT
+        var result = await _sut.GetUserProfileAsync(userId);
 
-        
-        Assert.Equal(user.Username, encryptedName);
-        Assert.Equal(user.Username, encryptedName);
-
+        // 3. ASSERT
+        Assert.NotNull(result);
+        Assert.Equal(decryptedUsername, result.Username); 
     }
-    
 }

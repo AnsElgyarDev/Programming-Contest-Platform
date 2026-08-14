@@ -21,7 +21,11 @@ public class AppDbContext : DbContext
 
         var configuartions = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
         var connectionString = configuartions.GetConnectionString("DefaultConnection");
-        optionsBuilder.UseSqlServer(connectionString);
+        
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(connectionString);
+        }
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
