@@ -55,7 +55,7 @@ public class AuthService : IAuthService
 
     public async Task<TokenResponseDto> SignInUserAsync(UserDto signInDto)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(user => user.Username == signInDto.UserName);
+        var user = await _context.Users.FirstOrDefaultAsync(user => _encryptionService.Decrypt(user.Username) == signInDto.UserName);
 
         if(user is null)
         {
