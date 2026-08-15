@@ -5,6 +5,7 @@ using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Services;
 using System.Globalization;
+using Programming_Contest_Platform.DTO;
 
 public class UserTests
 {
@@ -108,5 +109,71 @@ public class UserTests
         var userInDbAfterDelete = await _context.Users.FindAsync(userId);
      
         Assert.Null(userInDbAfterDelete);
-    }   
+    }
+
+    [Fact]
+    public async Task UpdateUserAsync_WhenUserDoesNotExist_ShouldReturnFailureResult()
+    {
+        // 1. ARRANGE
+        Guid nonExistentUserId = Guid.NewGuid();
+        var updateDto = new UpdateUserDto
+        {
+            FullName = "New Name",
+            Country = "Egypt"
+        };
+
+        var result = await _sut.UpdateUserAsync(nonExistentUserId, updateDto);
+
+        Assert.False(result.isSuccess);
+        Assert.Equal("There is No User With This ID !", result.Data);
+    }
+
+    [Theory]
+    [InlineData("Updated Name", "Egypt", "Damanhour Univ", "http://new-pic.com/1.png")]
+    [InlineData("Updated Name Only", null, null, null)]
+    [InlineData(null, "Canada", "SalamDev", null)]
+    public async Task UpdateUserAsync_WhenUserExists_ShouldUpdateProvidedFieldsAndKeepExistingData(
+        string? newFullName, 
+        string? newCountry, 
+        string? newOrganization, 
+        string? newProfilePictureUrl)
+    {
+        Guid userId = Guid.NewGuid();
+        
+        var initialUser = new User
+        {
+            Id = userId,
+            FullName = "Original Name",
+            Country = "Original Country",
+            Organization = "Original Org",
+            ProfilePictureUrl = "http://original.com/pic.png",
+            Username = "ans27",
+            PasswordHash = "hash123",
+            Role = "User"
+        };
+
+        _context.Users.Add(initialUser);
+        await _context.SaveChangesAsync();
+
+        var updateDto = new UpdateUserDto
+        {
+            FullName = newFullName,
+            Country = newCountry,
+            Organization = newOrganization,
+            ProfilePictureUrl = newProfilePictureUrl
+        };
+
+        var result = await _sut.UpdateUserAsync(userId, updateDto);
+
+        Assert.True(result.isSuccess);
+        Assert.Equal("Updated User Successfully!", result.Data);
+
+        var updatedUserInDb = await _context.Users.FindAsync(userId);
+        Assert.NotNull(updatedUserInDb);
+
+        Assert.Equal(newFullName ?? "Original Name", updatedUserInDb.FullName);
+        Assert.Equal(newCountry ?? "Original Country", updatedUserInDb.Country);
+        Assert.Equal(newOrganization ?? "Original Org", updatedUserInDb.Organization);
+        Assert.Equal(newProfilePictureUrl ?? "http://original.com/pic.png", updatedUserInDb.ProfilePictureUrl);
+    } 
 }

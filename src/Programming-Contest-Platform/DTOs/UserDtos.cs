@@ -7,13 +7,13 @@ public class UserDto
     public string Role { get; set; } = string.Empty;
 }
 
-public record UpdateUserDto
-(
-    string? FullName,
-    string? Country,
-    string? Organization,
-    string? ProfilePictureUrl
-);
+public class UpdateUserDto
+{
+    public string? FullName { get; set; } = string.Empty;
+    public string? Country { get; set; } = string.Empty;
+    public string? Organization { get; set; } = string.Empty;
+    public string? ProfilePictureUrl { get; set; } = string.Empty;
+}
 
 public class UserProfileDto
 {
