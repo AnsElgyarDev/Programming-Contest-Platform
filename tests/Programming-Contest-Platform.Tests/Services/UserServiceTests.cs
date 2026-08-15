@@ -27,8 +27,8 @@ public class UserTests
     [Fact]
     public async Task GetUserProfileAsync_WhenUserIdIsNull_ShouldReturnNull()
     {
-        Guid? userId = null;         
-        var result = await _sut.GetUserProfileAsync(userId ?? Guid.Empty);
+        Guid? userId = null;
+        var result = await _sut.GetUserProfileAsync(userId);
         
         Assert.Null(result);
     }
@@ -63,5 +63,25 @@ public class UserTests
         // 3. ASSERT
         Assert.NotNull(result);
         Assert.Equal(decryptedUsername, result.Username); 
+    }
+
+    [Fact]
+    public async Task DeleteUserAsync_WhenUserIsNull_ShouldReturnUserFailureServiceResult()
+    {
+        Guid nonExistedUserId = Guid.NewGuid(); 
+        var result = await _sut.DeleteUserAsync(nonExistedUserId);
+        
+        Assert.Equal(result, new ServiceResult<string> 
+        {
+            isFailure = true,
+            ErrorMessage = "There is no User With This ID!",
+            isSuccess = false
+        }); 
+    }
+    
+    [Fact]
+    public async Task DeleteUserAsync_WhenUserExists_ShouldDeleteUserAndReturnSuccessServiceResult()
+    {
+        
     }
 }

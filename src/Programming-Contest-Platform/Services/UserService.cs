@@ -42,7 +42,7 @@ public class UserService : IUserService
     }
 
     public async Task<ServiceResult<string>> DeleteUserAsync(Guid userId)
-    {
+    {        
         var user = await _context.Users.FindAsync(userId);
 
         if (user is null)
