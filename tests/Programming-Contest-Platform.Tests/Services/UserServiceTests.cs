@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.Entity;
 using Programming_Contest_Platform.Services;
+using System.Globalization;
 
 public class UserTests
 {
@@ -82,6 +83,30 @@ public class UserTests
     [Fact]
     public async Task DeleteUserAsync_WhenUserExists_ShouldDeleteUserAndReturnSuccessServiceResult()
     {
+        Guid userId = Guid.NewGuid();
         
-    }
+        var userInDb = new User
+        {
+            Id = userId,
+            FullName = "Ans Elgyar",
+            Username = "anselgyar27", 
+            PasswordHash = "hash123", 
+            Role = "User"
+        };
+
+        _context.Users.Add(userInDb);
+        await _context.SaveChangesAsync();
+        
+        var result = await _sut.DeleteUserAsync(userId);
+        
+        Assert.Equal(result, new ServiceResult<string>
+        {
+            Data = "The Deletion Completed Successfully!",
+            isSuccess = true
+        });
+
+        var userInDbAfterDelete = await _context.Users.FindAsync(userId);
+     
+        Assert.Null(userInDbAfterDelete);
+    }   
 }
