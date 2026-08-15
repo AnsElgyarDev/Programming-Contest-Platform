@@ -125,7 +125,7 @@ public class UserTests
         var result = await _sut.UpdateUserAsync(nonExistentUserId, updateDto);
 
         Assert.False(result.isSuccess);
-        Assert.Equal("There is No User With This ID !", result.Data);
+        Assert.Equal("There is No User With This ID !", result.ErrorMessage);
     }
 
     [Theory]
