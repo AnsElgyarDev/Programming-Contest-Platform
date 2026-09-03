@@ -17,6 +17,7 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
+builder.Services.AddMemoryCache(); 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();

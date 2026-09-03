@@ -7,6 +7,7 @@ namespace Programming_Contest_Platform.Services;
 public class ProblemService : IProblemService
 {
     private readonly AppDbContext _context;
+    private readonly IMemoryCachee _memoryCache;
     public ProblemService(AppDbContext context)
     {
         _context = context;
@@ -20,23 +21,34 @@ public class ProblemService : IProblemService
                         ProblemLevel = problem.ProblemLevel 
                     }).ToListAsync();
     }
-
-    public async Task<ProblemDetailsDto> GetProblem(int problemId)
+    public async Task<ProblemDetailsDto?> GetProblem(int problemId)
     {
-        var problem = await _context.Problems
-                                .FindAsync(problemId);
-        
-        if(problem is null)
-        {
-            return null!;    
-        }
+        string cacheKey = $"Problem_{problemId}";
 
-        return new ProblemDetailsDto 
+        return await _cache.GetOrCreateAsync(cacheKey, async entry =>
         {
-            ProblemName = problem!.ProblemName,
-            ProblemDescription = problem.ProblemDescription,
-            ProblemLevel = problem.ProblemLevel,
-            ContestName = problem.Contest.ContestName
-        };
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
+            entry.SlidingExpiration = TimeSpan.FromMinutes(10);
+            entry.Priority = CacheItemPriority.High;
+
+            var problemDto = await _context.Problems
+                .Where(p => p.Id == problemId)
+                .Select(p => new ProblemDetailsDto
+                {
+                    ProblemName = p.ProblemName,
+                    ProblemDescription = p.ProblemDescription,
+                    ProblemLevel = p.ProblemLevel,
+                    ContestName = p.Contest.ContestName
+                })
+                .FirstOrDefaultAsync();
+
+            if (problemDto is null)
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(1);
+                return null;
+            }
+
+            return problemDto;
+        });
     }
 }
