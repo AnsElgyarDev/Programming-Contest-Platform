@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Programming_Contest_Platform.Data;
 using Programming_Contest_Platform.DTO;
 
@@ -7,10 +8,11 @@ namespace Programming_Contest_Platform.Services;
 public class ProblemService : IProblemService
 {
     private readonly AppDbContext _context;
-    private readonly IMemoryCachee _memoryCache;
-    public ProblemService(AppDbContext context)
+    private readonly IMemoryCache _memoryCache;
+    public ProblemService(AppDbContext context, IMemoryCache memoryCache)
     {
         _context = context;
+        _memoryCache = memoryCache;
     }
     public async Task<ICollection<ProblemSummaryDto>> GetAllProblems()
     {
@@ -25,14 +27,14 @@ public class ProblemService : IProblemService
     {
         string cacheKey = $"Problem_{problemId}";
 
-        return await _cache.GetOrCreateAsync(cacheKey, async entry =>
+        return await _memoryCache.GetOrCreateAsync(cacheKey, async entry =>
         {
             entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(30);
             entry.SlidingExpiration = TimeSpan.FromMinutes(10);
             entry.Priority = CacheItemPriority.High;
 
             var problemDto = await _context.Problems
-                .Where(p => p.Id == problemId)
+                .Where(p => p.ProblemId == problemId)
                 .Select(p => new ProblemDetailsDto
                 {
                     ProblemName = p.ProblemName,
