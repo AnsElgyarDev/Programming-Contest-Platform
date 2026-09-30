@@ -17,7 +17,7 @@ builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddOpenApi();
 builder.Services.AddAuthorization();
 builder.Services.AddProblemDetails();
-builder.Services.AddMemoryCache(); 
+builder.Services.AddMemoryCache();         
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtHelperService, JwtHelperService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -33,15 +33,17 @@ builder.Services.Configure<EncryptionSettings>(
 
 builder.Services.AddSingleton<IEncryptionService, EncryptionService>();
 builder.Services.AddAppPolicies();
+
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(     20);  
+    options.IdleTimeout = TimeSpan.FromMinutes(20);  
     options.Cookie.Name = ".ECommerceApp.Session";
     options.Cookie.HttpOnly = true;                  
     options.Cookie.IsEssential = true;                
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always; 
     options.Cookie.SameSite = SameSiteMode.Strict;    
 });
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 .AddJwtBearer(options =>
 {
